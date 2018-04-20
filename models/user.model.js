@@ -34,6 +34,18 @@ let UserSchema = new Schema({
     timestamps: {
         createdAt: 'created_at',
         updatedAt: 'updated_at'
+    },
+    toJSON: {
+        transform: function(doc, ret) {
+            const { _id: id, username, email, created_at, updated_at } = ret;
+            return {
+                id,
+                username,
+                email,
+                created_at,
+                updated_at
+            };
+        }
     }
 });
 
@@ -64,6 +76,9 @@ UserSchema.methods = {
      */
 
     authenticate: function(plainText) {
+        console.log(plainText);
+        console.log(this.encryptPassword(plainText));
+        console.log(this.hashed_password);
         return this.encryptPassword(plainText) === this.hashed_password;
     },
 
@@ -90,13 +105,15 @@ UserSchema.methods = {
         if (!password)
             return '';
         try {
+            console.log(this.salt);
+            console.log(password);
             return bcrypt.hashSync(password, this.salt);
         } catch (err) {
             return '';
         }
     }
-}
+};
 
 UserSchema.plugin(uniqueValidator);
 
-module.exports = mongoose.model("User", UserSchema);
+module.exports = mongoose.model('User', UserSchema);
