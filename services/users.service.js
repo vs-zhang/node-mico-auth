@@ -37,7 +37,6 @@ module.exports = {
 		/**
 		 * find
 		 * @param {String} username
-		 * @param {String} password
 		 */
 		find: {
 			params: {

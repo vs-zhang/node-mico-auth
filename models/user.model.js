@@ -76,9 +76,6 @@ UserSchema.methods = {
      */
 
     authenticate: function(plainText) {
-        console.log(plainText);
-        console.log(this.encryptPassword(plainText));
-        console.log(this.hashed_password);
         return this.encryptPassword(plainText) === this.hashed_password;
     },
 
@@ -105,8 +102,6 @@ UserSchema.methods = {
         if (!password)
             return '';
         try {
-            console.log(this.salt);
-            console.log(password);
             return bcrypt.hashSync(password, this.salt);
         } catch (err) {
             return '';
