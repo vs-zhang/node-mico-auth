@@ -21,10 +21,11 @@ module.exports = {
 			params: {
 				client_id: { type: 'string' }
 			},
-			handler(ctx) {
+			async handler(ctx) {
 				const { client_id } = ctx.params;
 				return Promise.resolve()
-					.then(() => this.adapter.findOne({ client_id }));
+				const client = await this.adapter.findOne({ client_id });
+				return client;
 			}
 		}
 	},

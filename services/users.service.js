@@ -24,14 +24,13 @@ module.exports = {
 				email: { type: 'string' },
 				password: { type: 'string' }
 			},
-			handler(ctx) {
+			async handler(ctx) {
 				const { username, email, password } = ctx.params;
-				return Promise.resolve()
-					.then(() => this.adapter.insert({
-						username,
-						email,
-						password,
-					}));
+				return await this.adapter.insert({
+					username,
+					email,
+					password,
+				});
 			}
 		},
 		/**
@@ -42,10 +41,9 @@ module.exports = {
 			params: {
 				username: { type: 'string' }
 			},
-			handler(ctx) {
+			async handler(ctx) {
 				const { username } = ctx.params;
-				return Promise.resolve()
-					.then(() => this.adapter.findOne({ username: username }));
+				return await this.adapter.findOne({ username: username });
 			}
 		}
 	},

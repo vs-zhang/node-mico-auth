@@ -5,7 +5,6 @@ const { MoleculerError } = require('moleculer').Errors;
 module.exports = {
 	name: 'auth',
 	settings: {},
-	metadata: {},
 	actions: {
 		/**
 		 * Signup
@@ -14,11 +13,11 @@ module.exports = {
 		 * @param {String} password
 		 */
 		signup: {
-			handler(ctx) {
+			async handler(ctx) {
 				const { username, email, password } = ctx.params;
-				return this.waitForServices(['users'])
-					.then(() => this.broker.call('users.create', { username, email, password }))
-					.then(user => user.toJSON());
+				await this.waitForServices(['users']);
+				const user = await this.broker.call('users.create', { username, email, password });
+				return user.toJSON();
 			}
 		},
 		/**
@@ -27,17 +26,16 @@ module.exports = {
 		 * @param {String} password
 		 */
 		token: {
-			handler(ctx) {
+			async handler(ctx) {
 				const { username, password } = ctx.params;
-				return this.waitForServices(['users'])
-					.then(() => this.broker.call('users.find', { username, password }))
-					.then(user => {
-						const isAuth = user.authenticate(password);
-						if (!isAuth) {
-							throw new MoleculerError('Unauthorized', 401);
-						}
-						return user.toJSON();
-					});
+				const { client } = ctx.meta;
+				await this.waitForServices(['users']);
+				const user = await this.broker.call('users.find', { username, password });
+				const isAuth = user.authenticate(password);
+				if (!isAuth) {
+					throw new MoleculerError('Unauthorized', 401);
+				}
+				return user.toJSON();
 			}
 		}
 	},
